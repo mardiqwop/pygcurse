@@ -372,6 +372,7 @@ def pygprint(self, obj='', *objs, sep=' ', end='\n', fgcolor=None, bgcolor=None,
 
                     if self._screenchar[x][y] is None:
                         self._surfaceobj.fill(ERASECOLOR, cellrect)
+                        continue
 
                     self._surfaceobj.fill(cellbgcolor, cellrect)
 
