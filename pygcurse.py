@@ -22,7 +22,7 @@ Pygcurse was developed by Al Sweigart (al@inventwithpython.com)
 https://github.com/asweigart/pygcurse
 
 
-Simplified BSD License:
+Simplified BSD License:acess email account
 
 Copyright 2011 Al Sweigart. All rights reserved.
 
@@ -372,7 +372,6 @@ def pygprint(self, obj='', *objs, sep=' ', end='\n', fgcolor=None, bgcolor=None,
 
                     if self._screenchar[x][y] is None:
                         self._surfaceobj.fill(ERASECOLOR, cellrect)
-                        continue
 
                     self._surfaceobj.fill(cellbgcolor, cellrect)
 
@@ -856,7 +855,6 @@ def pygprint(self, obj='', *objs, sep=' ', end='\n', fgcolor=None, bgcolor=None,
         # NOTE - I chose 51 for the default amount because 51 is a fifth of 255.
         self.tint(amount, amount, amount, region)
 
-
     def darken(self, amount=51, region=None):
         """
         Adds a darkening tint to the region specified.
@@ -1328,10 +1326,10 @@ def pygprint(self, obj='', *objs, sep=' ', end='\n', fgcolor=None, bgcolor=None,
     def _propsetcursorx(self, value):
         """
         Set the cursor's x coordinate.
-        
-        value - The new x coordinate. A negative value can be used to specify 
-        the x coordinate in terms of its relative distance to the right border 
-        of the surface. No operation will be performed if value is greater than 
+
+        value - The new x coordinate. A negative value can be used to specify
+        the x coordinate in terms of its relative distance to the right border
+        of the surface. No operation will be performed if value is greater than
         or equal to the width of the surface.
         """
         x = int(value)
@@ -1351,10 +1349,10 @@ def pygprint(self, obj='', *objs, sep=' ', end='\n', fgcolor=None, bgcolor=None,
     def _propsetcursory(self, value):
         """
         Set the cursor's y coordinate.
-        
-        value - The new y coordinate. A negative value can be used to specify 
-        the y coordinate in terms of its relative distance to the bottom border 
-        of the surface. No operation will be performed if value is greater than 
+
+        value - The new y coordinate. A negative value can be used to specify
+        the y coordinate in terms of its relative distance to the bottom border
+        of the surface. No operation will be performed if value is greater than
         or equal to the height of the surface.
         """
         y = int(value)
@@ -2075,7 +2073,7 @@ class PygcurseInput():
 
 
 class PygcurseTextbox:
-    def __init__(self, pygsurf, region=None, fgcolor=None, bgcolor=None, text='', wrap=True, border='basic', caption='', margin=0, marginleft=None, marginright=None, margintop=None, marginbottom=None, shadow=None, shadowamount=51):
+    def __init__(self, pygsurf, region=None, fgcolor=None, bgcolor=None, text='', wrap=True, border='basic', caption='', margin=0, marginleft=None, marginright=None, margintop=None, marginbottom=None, shadow=None, shadowamount=51,scrollable=False,scrollamount=5,fulltext=''):
         self.pygsurf = pygsurf
         self.x, self.y, self.width, self.height = pygsurf.getregion(region, False)
 
@@ -2100,10 +2098,15 @@ class PygcurseTextbox:
             self.marginleft = marginleft
         self.shadow = shadow # value is a None or directional constant, e.g. NORTHWEST
         self.shadowamount = shadowamount
+        self.scrollable = scrollable
+        self.scrollamount = scrollamount
+        self.firstword = 0
+        self.fulltext = fulltext
 
         # not included in the parameters, because the number of parameters is getting ridiculous. The user can always change these later.
         self.shadowxoffset = 1
         self.shadowyoffset = 1
+
 
     def update(self, pygsurf=None):
         # NOTE - border of 'basic' uses +,-,| scheme. A single letter can be used to use that character for a border. None means no border. '' means an empty border (same as border of None and margin of 1)
@@ -2218,6 +2221,27 @@ class PygcurseTextbox:
             for ix in range(truncateLeftChars, min(len(line), maxDisplayedLength)):
                 pygsurf._screenchar[x + ix][y + iy] = line[ix]
             iy += 1
+
+
+    def scroll(self, direction):
+        # direction can be 'up' or 'down'
+        if self.scrollable:
+            words = self.fulltext.split(' ')
+            if direction == 'up':
+                self.firstword -= self.scrollamount
+            elif direction == 'down':
+                self.firstword += self.scrollamount
+            else:
+                raise Exception('scroll must be called either with \'up\' or \'down\'')
+
+            # the index of the first word of the text shown is incremented or decremented
+            self.text = ' '.join(words[self.firstword:])
+
+            # clip the view of the fulltext
+            if self.firstword > len(words) - self.height:
+                self.firstword = len(words) - self.height
+            if self.firstword <= self.scrollamount:
+                self.firstword = self.scrollamount
 
 
     def getdisplayedtext(self):
