@@ -19,7 +19,7 @@ We are the miracle of force and matter making itself over into imagination and w
  - Ray Bradbury
 '''
 
-# do this so fulltext will show before scroll is called
+# do this so fulltext will be shown before scroll is called
 testbox.text = testbox.fulltext
 
 running = True
@@ -37,10 +37,8 @@ while running:
                 testbox.scroll('down')
         elif event.type == KEYDOWN:
             if event.key == K_UP:
-                print 'yep'
                 testbox.scroll('up')
             elif event.key == K_DOWN:
-                print 'nope'
                 testbox.scroll('down')
 
     testbox.update()
