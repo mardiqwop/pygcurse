@@ -22,7 +22,7 @@ Pygcurse was developed by Al Sweigart (al@inventwithpython.com)
 https://github.com/asweigart/pygcurse
 
 
-Simplified BSD License:acess email account
+Simplified BSD License:
 
 Copyright 2011 Al Sweigart. All rights reserved.
 
